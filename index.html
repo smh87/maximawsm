@@ -1,0 +1,96 @@
+<!doctype html>
+<title>Void MaximaEmulator</title>
+
+
+<script src="/build/libv86.js"></script>
+<link rel="stylesheet" href="v86.css">
+<script>
+"use strict";
+
+window.onload = function()
+{
+    var emulator = window.emulator = new V86({
+        wasm_path: "/build/v86.wasm",
+        memory_size: 1024 * 1024 * 1024,
+        vga_memory_size: 8 * 1024 * 1024,
+        screen_container: document.getElementById("screen_container"),
+        bios: {
+            url: "/bios/seabios.bin",
+        },
+        vga_bios: {
+            url: "/bios/vgabios.bin",
+        },
+        cdrom: {
+		url: "/images/live-wxmaxima-image-i386.iso",
+        },
+        autostart: true,
+        serial_container:document.getElementById("terminal"),
+	
+        initial_state: {
+        "url": "/images/v86state.bin",
+       }
+    });
+
+
+document.getElementById("save_file").onclick = async function()
+    {
+        const new_state = await emulator.save_state();
+
+        var a = document.createElement("a");
+        a.download = "v86state.bin";
+        a.href = window.URL.createObjectURL(new Blob([new_state]));
+        a.dataset.downloadurl = "application/octet-stream:" + a.download + ":" + a.href;
+        a.click();
+
+        this.blur();
+    };
+
+    document.getElementById("restore_file").onchange = function()
+    {
+        if(this.files.length)
+        {
+            var filereader = new FileReader();
+            emulator.stop();
+
+            filereader.onload = async function(e)
+            {
+                await emulator.restore_state(e.target.result);
+                emulator.run();
+            };
+
+            filereader.readAsArrayBuffer(this.files[0]);
+
+            this.value = "";
+        }
+
+        this.blur();
+    };
+};
+</script>
+
+<input id="save_file" type="button" value="Save state to file">
+Restore from file: <input id="restore_file" type="file">
+<hr>
+
+<div id="screen_container">
+    <div></div>
+    <canvas style="display: none"></canvas>
+</div>
+
+
+
+
+<br style="clear: both"><br>
+clipboard shared with vm.
+<textarea rows=25 cols=60 id="terminal"></textarea>
+<br style="clear: both">
+<code>Version: <a href="https://github.com/copy/v86/commits/50ba376e">50ba376e</a> (Dec 20, 2023 13:12)</code>
+
+<hr>
+<a href="advent/2023/index.html">Advent of v86</a>
+&mdash;
+<a href="debug.html">Enable debug</a>
+&mdash;
+<a href="https://github.com/copy/v86">V86 Project on Github</a>
+&mdash;
+
