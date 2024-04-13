@@ -15,5 +15,5 @@
 ![Screenshot](wxmaximaInBrowser.gif)
 
 
-Thanks to the great emulator V87
+Thanks to the great emulator V86
 [https://github.com/copy/v86](https://github.com/copy/v86)
