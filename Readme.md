@@ -13,3 +13,7 @@
  
 ## Screenshot from the project
 ![Screenshot](wxmaximaInBrowser.gif)
+
+
+Thanks to the great emulator V87
+[https://github.com/copy/v86](https://github.com/copy/v86)
